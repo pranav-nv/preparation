@@ -10,7 +10,6 @@ swap(char *x,char *y)
     *y = tmp;
 }
 
-void
 print_a(char a[],int n)
 {
     int k=0;
@@ -30,9 +29,9 @@ permute (char *a,int n,int i)
         return;
     }
 
-    for (j=i;j<n-1;j++) {
+    for (j=i;j<n;j++) {
         swap(&a[j],&a[i]);
-        permute(a,n,j+1);
+        permute(a,n,i+1);
         swap(&a[j],&a[i]);
     }
     return;
