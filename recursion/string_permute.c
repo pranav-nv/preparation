@@ -10,6 +10,7 @@ swap(char *x,char *y)
     *y = tmp;
 }
 
+void
 print_a(char a[],int n)
 {
     int k=0;
