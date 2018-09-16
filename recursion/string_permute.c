@@ -10,22 +10,29 @@ swap(char *x,char *y)
 }
 
 void
+print_a(char a[],int n)
+{
+    int k=0;
+    for (k=0;k<n;k++) {
+        printf ("%c ",a[k]);
+    }
+    printf("\n");
+}
+
+void
 permute (char *a,int n,int i)
 {
     int j;
+
     if (i == n-1) {
-        int k=0;
-        for (k=0;k<n;k++) {
-            printf ("%c ",a[k]);
-        }
-        printf("\n");
+        print_a(a,n);
         return;
     }
 
     for (j=i;j<n-1;j++) {
-        swap(&a[j],&a[j]);
-        permute(a,n,j++);
-        swap(&a[j],&a[j]);
+        swap(&a[j],&a[i]);
+        permute(a,n,j+1);
+        swap(&a[j],&a[i]);
     }
     return;
 }
@@ -33,5 +40,5 @@ permute (char *a,int n,int i)
 int main()
 {
     char a[] = "abcd";
-    permute(a,sizeof(a),0);
+    permute(a,4,0);
 }
