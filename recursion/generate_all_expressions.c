@@ -45,32 +45,97 @@
 #include "stdlib.h"
 #include "string.h"
 
-char** 
-generate_all_expressions_help(char* s,int len,int s_i,long long int target, int* result_size,char *exp_arr,int exp_arr_i)
+
+long long int
+eval_exp(char *s)
+{
+	char *s_work = s;	
+	long long int num[10];	
+	char exp[10]={0};
+	int i=0;
+	int num_count=0;
+	char *ptr;
+	long long int res = 0; 
+
+	while (*s_work != 0) {
+		num[num_count] = strtol(s_work,&ptr,10);
+		exp[num_count] = *ptr;
+		num_count++;
+		if (*ptr == 0) {
+			break;
+		}
+		s_work = ptr+1;
+	}
+	
+	if (num_count == 1) {
+		return num[0];
+	}
+	if (num_count == 0) {
+		return 0;
+	}
+	
+	for (i=0;i<num_count;i++) {
+		if (exp[i] && (exp[i] == '*' || exp[i] == '/')) {
+				if (exp[i] && exp[i] == '*') {
+					res = num[i] * num[i+1];		
+				} 
+				else if (exp[i] && exp[i] == '/') {
+					res = num[i] / num[i+1];		
+				}
+				num[i+1] = res;
+				num[i] = res;
+		}
+	}
+	
+	for (i=0;i<num_count;i++) {
+		if (exp[i] && (exp[i] == '+' || exp[i] == '-')) {
+				if (exp[i] && exp[i] == '+') {
+					res = num[i] + num[i+1];		
+				} else if (exp[i] && exp[i] == '+') {
+					res = num[i] - num[i+1];		
+				}
+				num[i+1] = res;
+				num[i] = res;
+		}
+	}
+	return res;	
+}
+
+void
+generate_all_expressions_help(char* s,int len,int s_i,long long int target, int* result_size,char *exp_arr,int exp_arr_i,char exp_arr_list[][128])
 {	char exp[] = " *+";
 	int i;
+	long long int ret;
 
 	if (s_i >= len-1) {
+		char cur_exp[128]={0};
+		char *cur_exp_p = cur_exp;
 		for (i=0;i<len;i++) {
-			printf("%c",s[i]);
+			sprintf(cur_exp_p++,"%c",s[i]);
 			if (i<len-1) {
 				if (exp_arr[i] != ' ') {
-					printf("%c",exp_arr[i]);
+					sprintf(cur_exp_p++,"%c",exp_arr[i]);
 				}
 			}
+		}	
+		*cur_exp_p = 0;
+		//ret = eval_exp(cur_exp);
+		printf ("%s = %lld\n",cur_exp,ret);
+		if (ret == target) {
+			strcpy(exp_arr_list[*result_size],cur_exp); 
+			(*result_size)++;
 		}
-		printf("\n");
-		return NULL;
 	}
 
 	for (i=0;i<3;i++) {
 		exp_arr[exp_arr_i] = exp[i]; 
-		generate_all_expressions_help(s,len,s_i+1,target,result_size,exp_arr,exp_arr_i+1);
+		generate_all_expressions_help(s,len,s_i+1,target,result_size,exp_arr,exp_arr_i+1,exp_arr_list);
 				
 	}
-	return NULL;
 }	
 
+
+char exp_arr_list[128][128]={0};
 
 char** 
 generate_all_expressions(char* s, long long int target, int* result_size) 
@@ -79,10 +144,18 @@ generate_all_expressions(char* s, long long int target, int* result_size)
 	char *exp_arr = calloc(1,len);
 	int s_i=0;
 	int exp_arr_i=0;
-	
-	generate_all_expressions_help(s,len,s_i,target,result_size,exp_arr,exp_arr_i);
+	int i;
 
-	return NULL;
+	generate_all_expressions_help(s,len,s_i,target,result_size,exp_arr,exp_arr_i,exp_arr_list);
+	
+	printf("*result_size = %d\n",*result_size);
+
+#if 0
+	for (i=0;i<*result_size;i++) {
+		printf("%s = %lld\n",exp_arr_list[i],target);
+	}
+#endif	
+	return (char **)exp_arr_list;
 }
 
 int
