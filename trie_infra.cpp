@@ -7,7 +7,7 @@ using namespace std;
 typedef struct trie_node_ trie_node_t;
 
 struct trie_node_ {
-    std::unordered_map<char,trie_node_t*> children;
+    unordered_map<char,trie_node_t*> children;
     bool isword;
 };
 
@@ -35,7 +35,6 @@ void
 trie_print_subtree(trie_node_t *root, char *wordsofar,int len)
 {
     if (root->children.size() == 0) {
-        printf("%s\n",wordsofar);
         return;
     }
 
